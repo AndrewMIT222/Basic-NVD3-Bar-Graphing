@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v3.js"></script>
+<script type="text/javascript" src="nv.d3.js"></script>
+<link href="nv.d3.css" rel="stylesheet" type="text/css" />
+    <script src="jquery-3.1.0.min.js"></script>
+
+</head>
+<body>
+
+<div id="charts"></div>
+
+<script>
+
+var xVals = ["AF", "NF", "NO", "RF"];
+var yVals = [[37734107.00, 991417.00, 74476040.00, 37719753.00], [56586554400.73, 1487504710.38, 111701729697.74, 56568041380.90],
+[53758257134.87, 1413082168.05, 106118230307.61, 53741292684.60], [55909065222.83, 1469649223.19, 110367043872.50, 55889619119.83],
+[25.52, 25.52, 25.50, 25.51], [38273.13, 38284.47, 38249.12, 38250.86], [.05, .05, .05, .05], [1478493, 38854, 2920374, 1478870]];
+
+
+for (i = 0; i < yVals.length; i++)
+{
+
+    $("#charts").append('<div id="chart' + (i + 1) + '"> <svg style="height:200px"></svg> </div>');
+
+    var yData = yVals[i];
+    var j = i;
+    //add in dom node in java script as a container for one chart
+     //nv.addGraph(function () {
+         var chart = nv.models.discreteBarChart()
+                         .x(function (d) {
+                             return d.label
+                         })    //Specify the data accessors.
+                         .y(function (d) {
+                             return d.value
+                         })
+                         .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                         .tooltips(false)        //Don't show tooltips
+                         .showValues(true)       //...instead, show the bar value right on top of each bar.
+                         .duration(350)
+                 ;
+
+         d3.select('#chart' + (j + 1) + ' svg') //pass in a reference
+                 .datum(exampleData(yData))
+                 .call(chart);
+
+         nv.utils.windowResize(chart.update);
+
+         //return chart;
+     //});
+ }
+
+
+
+
+//Each bar represents a single discrete quantity.
+function exampleData(list) {
+
+
+ return [
+    {
+      key: "Cumulative Return",
+      values: [
+        {
+          "label" : xVals[0] ,
+          "value" : list[0]
+        } ,
+        {
+          "label" : xVals[1] ,
+          "value" : list[1]
+        } ,
+        {
+          "label" : xVals[2] ,
+          "value" : list[2]
+        } ,
+        {
+          "label" : xVals[3] ,
+          "value" : list[3]
+        }
+
+      ]
+    }]
+
+}
+
+
+</script>
+
+
+</body>
+</html>
