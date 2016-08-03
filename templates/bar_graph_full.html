@@ -18,8 +18,8 @@ var xVals = ["AF", "NF", "NO", "RF"];
 
 $(document).ready(function(){
     $("button").click(function(){
-        $.get("../static/nv.d3_example_graph1.json", function(data, status){
-            var yVals = data;
+        $.get("data.json", function(data, status){
+            var yVals = data.yVals;
             createCharts(yVals);
         });
     });
