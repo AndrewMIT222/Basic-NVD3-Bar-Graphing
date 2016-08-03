@@ -4,23 +4,17 @@ import json
 import MySQLdb
 import monetdb.sql
 import decimal
+import urllib
 
 app = Flask(__name__)
 
 # Flask(__name__, template_folder="templates/bar_graph_full.html")
 
-'''
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, decimal.Decimal):
-            return float(o)
-        return super(DecimalEncoder, self).default(o)
-'''
 
 @app.route('/')
 def run_bar_graph():
 
-    return render_template('bar_graph_full.html')
+    return render_template('form.html')
 
 
 @app.route('/hello')
@@ -28,15 +22,13 @@ def hello_world():
     return 'Hello world!'
 
 
-@app.route('/data.json')
+@app.route('/form_submit')
 def return_json():
     connection = monetdb.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
     cursor = connection.cursor()
     cursor.arraysize = 100
-    cursor.execute("SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) \
-    AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) \
-    AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY \
-    l_returnflag, l_linestatus")
+    c = request.args.get('query')
+    cursor.execute(c)
     b = cursor.fetchall()
     '''
     a = {'yVals': [[37734107, 991417, 74476040, 37719753],
@@ -69,7 +61,7 @@ def return_json():
 
     a = {"yVals": yVals, "xVals": xVals}
 
-    return Response(json.dumps(a, default=decimal_default), mimetype='application/json')
+    return Response(json.dumps(a, default=decimal_default), mimetype='application/json'), urllib.quote(render_template('bar_graph_full.html'))
 
 
 if __name__ == '__main__':
