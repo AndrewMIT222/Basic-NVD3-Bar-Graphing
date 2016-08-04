@@ -14,19 +14,22 @@
 
 <script>
 
-var xVals = ["AF", "NF", "NO", "RF"];
+//var xVals = [];
+//var yVals = [];
 
+//var graphData = JSON.parse('{{ data|tojson }}');
 
 $(document).ready(function(){
-    $.get("data.json", function(data, status){
-        var yVals = data.yVals;
-        createCharts(yVals);
+    var graphData = {{ data|tojson }};
+    var xVals = graphData.xVals;
+    var yVals = graphData.yVals;
+    createCharts(xVals, yVals);
     });
 
-});
 
 
-function createCharts(yVals) {
+
+function createCharts(xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
@@ -50,7 +53,7 @@ function createCharts(yVals) {
                 ;
 
         d3.select('#chart' + (j + 1) + ' svg') //pass in a reference
-                .datum(exampleData(yData))
+                .datum(exampleData(xVals, yData))
                 .call(chart);
 
         nv.utils.windowResize(chart.update);
@@ -63,7 +66,7 @@ function createCharts(yVals) {
 
 
 //Each bar represents a single discrete quantity.
-function exampleData(list) {
+function exampleData(xVals, list) {
 
 
  return [

@@ -61,8 +61,11 @@ def return_json():
 
     a = {"yVals": yVals, "xVals": xVals}
 
-    return Response(json.dumps(a, default=decimal_default), mimetype='application/json'), urllib.quote(render_template('bar_graph_full.html'))
+    data = json.dumps(a, default=decimal_default)
 
+    a = json.loads(data)
+
+    return render_template("bar_graph_full.html", data=a)
 
 if __name__ == '__main__':
     app.run(debug=True)
