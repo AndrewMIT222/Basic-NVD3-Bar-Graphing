@@ -26,7 +26,7 @@ def hello_world():
 def return_json():
     connection = monetdb.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
     cursor = connection.cursor()
-    cursor.arraysize = 100
+    # cursor.arraysize = 100
     c = request.args.get('query')
     cursor.execute(c)
     b = cursor.fetchall()
@@ -40,6 +40,11 @@ def return_json():
          [0.05, 0.05, 0.05, 0.05],
          [1478493, 38854, 2920374, 1478870]], 'xVals': ["AF", "NF", "NO", "RF"]}
     '''
+
+    cursor2 = connection.cursor()
+    d = "trace " + request.args.get('query')
+    cursor.execute(d)
+    e = cursor.fetchall()
 
     def decimal_default(obj):
         if isinstance(obj, decimal.Decimal):
@@ -59,13 +64,15 @@ def return_json():
         count += 1
         yVals.append(yInnerList)
 
-    a = {"yVals": yVals, "xVals": xVals}
+    timeTook = e[-1][0]
+
+    a = {"yVals": yVals, "xVals": xVals, "runTime": timeTook}
 
     data = json.dumps(a, default=decimal_default)
 
     a = json.loads(data)
 
-    return render_template("bar_graph_full.html", data=a)
+    return render_template("bar_graph_full.html", data=a, timeTook=a.get("runTime"))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -26,14 +26,11 @@ $(document).ready(function(){
     createCharts(xVals, yVals);
     });
 
-
-
-
 function createCharts(xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
-        $("#charts").append('<div id="chart' + (i + 1) + '"> <svg style="height:200px"></svg> </div>');
+        $("#charts").append('<div id="chart' + (i + 1) + '"> <svg style="width:500px"></svg> </div>');
 
         var yData = yVals[i];
         var j = i;
@@ -97,6 +94,18 @@ function exampleData(xVals, list) {
 
 
 </script>
+
+<p>Runtime: </p>
+<p id="running"></p>
+
+<script type="text/javascript">
+    var runTime = {{ timeTook }};
+    document.getElementById("running").innerHTML = runTime.toString();
+
+
+</script>
+
+
 
 
 </body>
