@@ -8,6 +8,35 @@
 
 </head>
 <body>
+<style>
+    .chartBlock {
+        width: 500px;
+        float: left;
+    }
+</style>
+<script>
+function runquery() {
+    var newquery = $("#query").val();
+
+    $.getJSON( "get_data.json", {
+        query: newquery,
+        format: "json"
+    })
+    .done(function( data ) {
+      alert(data);
+        // remove existing chart1, chart 2, etc.
+        // add new ones.
+      });
+}
+</script>
+
+
+
+<form id="queryForm" name="queryForm" action="/form_submit" method="GET">
+    Query:<br>
+    <input type="text" id="query" name="query">
+    <input type="button" value="Submit" onclick="runquery()">
+</form>
 
 
 <div id="charts"></div>
@@ -30,7 +59,7 @@ function createCharts(xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
-        $("#charts").append('<div id="chart' + (i + 1) + '"> <svg style="width:500px"></svg> </div>');
+        $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '"> <svg style="width:500px"></svg> </div>');
 
         var yData = yVals[i];
         var j = i;

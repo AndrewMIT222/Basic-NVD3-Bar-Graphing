@@ -74,5 +74,63 @@ def return_json():
 
     return render_template("bar_graph_full.html", data=a, timeTook=a.get("runTime"))
 
+
+
+@app.route('/get_data.json')
+def return_json_get_data():
+
+    connection = monetdb.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
+    cursor = connection.cursor()
+    # cursor.arraysize = 100
+    c = request.args.get('query')
+    cursor.execute(c)
+    b = cursor.fetchall()
+    '''
+    a = {'yVals': [[37734107, 991417, 74476040, 37719753],
+         [56586554400.73, 1487504710.38, 111701729697.74, 56568041380.9],
+         [53758257134.87, 1413082168.05, 106118230307.61, 53741292684.6],
+         [55909065222.83, 1469649223.19, 110367043872.5, 55889619119.83],
+         [25.52, 25.52, 25.5, 25.51],
+         [38273.13, 38284.47, 38249.12, 38250.86],
+         [0.05, 0.05, 0.05, 0.05],
+         [1478493, 38854, 2920374, 1478870]], 'xVals': ["AF", "NF", "NO", "RF"]}
+    '''
+
+    cursor2 = connection.cursor()
+    d = "trace " + request.args.get('query')
+    cursor.execute(d)
+    e = cursor.fetchall()
+
+    def decimal_default(obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        raise TypeError
+
+    xVals = []
+    yVals = []
+
+    for x in b:
+        xVals.append(x[0]+x[1])
+    count = 2
+    for x in range((len(b[0])) - 2):
+        yInnerList = []
+        for y in b:
+            yInnerList.append(y[count])
+        count += 1
+        yVals.append(yInnerList)
+
+    timeTook = e[-1][0]
+
+    a = {"yVals": yVals, "xVals": xVals, "runTime": timeTook}
+
+    data = json.dumps(a, default=decimal_default)
+
+    a = json.loads(data)
+
+#    resp = Response(a, status=200, mimetype='application/json')
+
+#    return resp
+    return jsonify(a)
+
 if __name__ == '__main__':
     app.run(debug=True)
