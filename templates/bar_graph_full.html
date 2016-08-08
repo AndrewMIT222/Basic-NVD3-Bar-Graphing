@@ -15,7 +15,7 @@
     }
 </style>
 <script>
-function runquery() {
+function runQuery() {
     var newquery = $("#query").val();
 
     $.getJSON( "get_data.json", {
@@ -34,8 +34,9 @@ function runquery() {
 
 <form id="queryForm" name="queryForm" action="/form_submit" method="GET">
     Query:<br>
-    <input type="text" id="query" name="query">
-    <input type="button" value="Submit" onclick="runquery()">
+    <input type="text" id="query" name="query" size="175">
+    <br>
+    <input type="button" value="Submit" onclick="runQuery()">
 </form>
 
 
@@ -60,6 +61,7 @@ function createCharts(xVals, yVals) {
     for (i = 0; i < yVals.length; i++) {
 
         $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '"> <svg style="width:500px"></svg> </div>');
+        //where nodes are actually added
 
         var yData = yVals[i];
         var j = i;
