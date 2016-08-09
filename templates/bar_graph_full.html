@@ -7,13 +7,21 @@
     <script src="../static/jquery-3.1.0.min.js"></script>
 
 </head>
-<body>
+<body style="background-color: lightcyan">
 <style>
     .chartBlock {
         width: 500px;
+        height: 175px;
+        border-style: solid;
+        border-width: 10px;
+        border-color: lightcyan;
         float: left;
+        overflow: visible;
     }
 </style>
+
+
+
 <script>
 function runQuery() {
     var newquery = $("#query").val();
@@ -34,7 +42,7 @@ function runQuery() {
 
 <form id="queryForm" name="queryForm" action="/form_submit" method="GET">
     Query:<br>
-    <input type="text" id="query" name="query" size="175">
+    <input type="text" id="query" name="query" style="width:95%" value="SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY l_returnflag, l_linestatus">
     <br>
     <input type="button" value="Submit" onclick="runQuery()">
 </form>
@@ -60,7 +68,7 @@ function createCharts(xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
-        $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '"> <svg style="width:500px"></svg> </div>');
+        $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '" style="background-color: white" style="float: left"> <svg style="width:500px" style="height: 220px" style="float: left"></svg> </div>');
         //where nodes are actually added
 
         var yData = yVals[i];
@@ -80,9 +88,17 @@ function createCharts(xVals, yVals) {
                         .duration(350)
                 ;
 
+        d3.select('#chart' + (j + 1) + ' svg')
+                .append("text")
+                .attr("x", 45)
+                .attr("y", 170)
+                .attr("text-anchor", "middle")
+                .text("Chart " + (i + 1));
+
         d3.select('#chart' + (j + 1) + ' svg') //pass in a reference
                 .datum(exampleData(xVals, yData))
                 .call(chart);
+
 
         nv.utils.windowResize(chart.update);
 
@@ -126,6 +142,10 @@ function exampleData(xVals, list) {
 
 </script>
 
+<br>
+<hr>
+<br>
+
 <p>Runtime: </p>
 <p id="running"></p>
 
@@ -136,7 +156,9 @@ function exampleData(xVals, list) {
 
 </script>
 
-
+<noscript>
+    <p>JavaScript is not enabled for this browser. Please try again with another browser.</p>
+</noscript>
 
 
 </body>
