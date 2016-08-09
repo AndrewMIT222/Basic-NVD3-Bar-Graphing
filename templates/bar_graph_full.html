@@ -18,6 +18,9 @@
         float: left;
         overflow: visible;
     }
+    body {
+        font-family: "SansSerif", SansSerif;
+    }
 </style>
 
 
@@ -31,7 +34,6 @@ function runQuery() {
         format: "json"
     })
     .done(function( data ) {
-      alert(data);
         // remove existing chart1, chart 2, etc.
         // add new ones.
       });
@@ -42,9 +44,12 @@ function runQuery() {
 
 <form id="queryForm" name="queryForm" action="/form_submit" method="GET">
     Query:<br>
-    <input type="text" id="query" name="query" style="width:95%" value="SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY l_returnflag, l_linestatus">
-    <br>
-    <input type="button" value="Submit" onclick="runQuery()">
+    <input type="text" id="query" name="query" style="width:80%" value="SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY l_returnflag, l_linestatus">
+    <select id="dbsystem">
+        <option id="voodoo" value="voodoo">Voodoo</option>
+        <option id="monetdb" value="monetdb">MonetDB</option>
+    </select>
+    <input type="submit" value="Submit" onclick="runQuery()">
 </form>
 
 
@@ -68,7 +73,7 @@ function createCharts(xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
-        $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '" style="background-color: white" style="float: left"> <svg style="width:500px" style="height: 220px" style="float: left"></svg> </div>');
+        $("#charts").append('<div class="chartBlock" id="chart' + (i + 1) + '" style="background-color: white" style="float: left"> <svg style="width:500px" style="height: 250px" style="float: left"></svg> </div>');
         //where nodes are actually added
 
         var yData = yVals[i];
@@ -82,6 +87,7 @@ function createCharts(xVals, yVals) {
                         .y(function (d) {
                             return d.value
                         })
+                        .margin({top:40, left:90})
                         .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                         .tooltips(false)        //Don't show tooltips
                         .showValues(true)       //...instead, show the bar value right on top of each bar.
@@ -90,8 +96,8 @@ function createCharts(xVals, yVals) {
 
         d3.select('#chart' + (j + 1) + ' svg')
                 .append("text")
-                .attr("x", 45)
-                .attr("y", 170)
+                .attr("x", 35)
+                .attr("y", 20)
                 .attr("text-anchor", "middle")
                 .text("Chart " + (i + 1));
 
@@ -142,9 +148,8 @@ function exampleData(xVals, list) {
 
 </script>
 
-<br>
-<hr>
-<br>
+<br style="clear: left">
+<hr style="clear: left" noshade color="orange">
 
 <p>Runtime: </p>
 <p id="running"></p>

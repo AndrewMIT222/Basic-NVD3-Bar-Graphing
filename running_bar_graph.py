@@ -1,20 +1,24 @@
 from flask import Flask
 from flask import *
 import json
-import MySQLdb
+# import MySQLdb
 import monetdb.sql
+import sys
+if sys.platform == 'linux2':
+    import voodoo.sql
 import decimal
-import urllib
+# import urllib
 
 app = Flask(__name__)
 
 # Flask(__name__, template_folder="templates/bar_graph_full.html")
 
+# runOnVoodoo = False
+
 
 @app.route('/')
 def run_bar_graph():
-
-    return render_template('form.html')
+        return render_template('form.html')
 
 
 @app.route('/hello')
@@ -24,9 +28,15 @@ def hello_world():
 
 @app.route('/form_submit')
 def return_json():
-    connection = monetdb.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
+    runOnVoodoo = request.args.get('dbsystem')
+
+    if runOnVoodoo == 'voodoo':
+        dbconnector = voodoo
+
+    else:
+        dbconnector = monetdb
+    connection = dbconnector.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
     cursor = connection.cursor()
-    # cursor.arraysize = 100
     c = request.args.get('query')
     cursor.execute(c)
     b = cursor.fetchall()
@@ -43,8 +53,8 @@ def return_json():
 
     cursor2 = connection.cursor()
     d = "trace " + request.args.get('query')
-    cursor.execute(d)
-    e = cursor.fetchall()
+    cursor2.execute(d)
+    e = cursor2.fetchall()
 
     def decimal_default(obj):
         if isinstance(obj, decimal.Decimal):
@@ -78,10 +88,13 @@ def return_json():
 
 @app.route('/get_data.json')
 def return_json_get_data():
+    if runOnVoodoo:
+            dbconnector = voodoo
+    else:
+        dbconnector = monetdb
 
-    connection = monetdb.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
+    connection = dbconnector.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
     cursor = connection.cursor()
-    # cursor.arraysize = 100
     c = request.args.get('query')
     cursor.execute(c)
     b = cursor.fetchall()
@@ -98,8 +111,8 @@ def return_json_get_data():
 
     cursor2 = connection.cursor()
     d = "trace " + request.args.get('query')
-    cursor.execute(d)
-    e = cursor.fetchall()
+    cursor2.execute(d)
+    e = cursor2.fetchall()
 
     def decimal_default(obj):
         if isinstance(obj, decimal.Decimal):
@@ -130,6 +143,7 @@ def return_json_get_data():
 #    resp = Response(a, status=200, mimetype='application/json')
 
 #    return resp
+
     return jsonify(a)
 
 if __name__ == '__main__':
