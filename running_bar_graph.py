@@ -28,13 +28,13 @@ def hello_world():
 
 @app.route('/form_submit')
 def return_json():
-    runOnVoodoo = request.args.get('dbsystem')
 
+    runOnVoodoo = request.args.get('option')
     if runOnVoodoo == 'voodoo':
         dbconnector = voodoo
-
     else:
         dbconnector = monetdb
+
     connection = dbconnector.sql.connect(username="monetdb", password="monetdb", hostname="localhost", database="simple")
     cursor = connection.cursor()
     c = request.args.get('query')
@@ -88,8 +88,10 @@ def return_json():
 
 @app.route('/get_data.json')
 def return_json_get_data():
+
+    runOnVoodoo = request.form.get('dbsystem')
     if runOnVoodoo:
-            dbconnector = voodoo
+        dbconnector = voodoo
     else:
         dbconnector = monetdb
 

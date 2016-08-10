@@ -11,7 +11,7 @@
 <style>
     .chartBlock {
         width: 500px;
-        height: 175px;
+        height: 200px;
         border-style: solid;
         border-width: 10px;
         border-color: lightcyan;
@@ -45,11 +45,9 @@ function runQuery() {
 <form id="queryForm" name="queryForm" action="/form_submit" method="GET">
     Query:<br>
     <input type="text" id="query" name="query" style="width:80%" value="SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY l_returnflag, l_linestatus">
-    <select id="dbsystem">
-        <option id="voodoo" value="voodoo">Voodoo</option>
-        <option id="monetdb" value="monetdb">MonetDB</option>
-    </select>
-    <input type="submit" value="Submit" onclick="runQuery()">
+    <input type="radio" id="voodoo" name="option" value="voodoo" checked>Voodoo
+    <input type="radio" id="monetdb" name="option" value="monetdb">MonetDB
+    <input type="submit" value="Submit" onclick="runQuery()" style="width:5%">
 </form>
 
 
@@ -115,7 +113,7 @@ function createCharts(xVals, yVals) {
 
 
 
-//Each bar represents a single discrete quantity.
+//Each bar represents a single discrete (not discreet) quantity.
 function exampleData(xVals, list) {
 
 
@@ -162,7 +160,7 @@ function exampleData(xVals, list) {
 </script>
 
 <noscript>
-    <p>JavaScript is not enabled for this browser. Please try again with another browser.</p>
+    <p id="yourbrowserisold">JavaScript is not enabled for this browser. Please try again with another browser.</p>
 </noscript>
 
 
