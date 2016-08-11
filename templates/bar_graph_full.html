@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>BarGraphFull</title>
     <script src="https://d3js.org/d3.v3.js"></script>
 <script type="text/javascript" src="../static/nv.d3.js"></script>
 <link href="../static/nv.d3.css" rel="stylesheet" type="text/css" />
@@ -17,6 +19,7 @@
         border-color: lightcyan;
         float: left;
         overflow: visible;
+        text-align: center;
     }
     body {
         font-family: "SansSerif", SansSerif;
@@ -42,12 +45,12 @@ function runQuery() {
 
 
 
-<form id="queryForm" name="queryForm" action="/form_submit" method="GET">
+<form id="queryForm" name="queryForm">
     Query:<br>
     <input type="text" id="query" name="query" style="width:80%" value="SELECT l_returnflag, l_linestatus, sum(l_quantity) AS sum_qty, sum(l_extendedprice) AS sum_base_price, sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge, avg(l_quantity) AS avg_qty, avg(l_extendedprice) AS avg_price, avg(l_discount) AS avg_disc, count(*) AS count_order FROM lineitem WHERE l_shipdate <= date '1998-12-01' - interval '90' day (3) GROUP BY l_returnflag, l_linestatus ORDER BY l_returnflag, l_linestatus">
     <input type="radio" id="voodoo" name="option" value="voodoo" checked>Voodoo
     <input type="radio" id="monetdb" name="option" value="monetdb">MonetDB
-    <input type="submit" value="Submit" onclick="runQuery()" style="width:5%">
+    <input type="submit" name="submit" value="Submit" onclick="runQuery()" style="width:5%">
 </form>
 
 
@@ -60,14 +63,28 @@ function runQuery() {
 
 //var graphData = JSON.parse('{{ data|tojson }}');
 
+
+//Following was an attempt at maintaining radio selection across page loads that didn't work out.
+//$('#submit').click(function() {
+    //if ($('#monetdb').is(':checked')) {
+        //$("#monetdb").prop("checked", true)
+    //};
+    //if ($('#voodoo').is(':checked')) {
+        //$("#voodoo").prop("checked", true)
+    //};
+//});
+
 $(document).ready(function(){
     var graphData = {{ data|tojson }};
     var xVals = graphData.xVals;
     var yVals = graphData.yVals;
-    createCharts(xVals, yVals);
+    var chartNames = graphData.chartNames;
+    createCharts(chartNames, xVals, yVals);
     });
 
-function createCharts(xVals, yVals) {
+
+
+function createCharts(chartNames, xVals, yVals) {
 
     for (i = 0; i < yVals.length; i++) {
 
@@ -94,10 +111,10 @@ function createCharts(xVals, yVals) {
 
         d3.select('#chart' + (j + 1) + ' svg')
                 .append("text")
-                .attr("x", 35)
+                .attr("x",250)
                 .attr("y", 20)
                 .attr("text-anchor", "middle")
-                .text("Chart " + (i + 1));
+                .text(chartNames[j+2]);
 
         d3.select('#chart' + (j + 1) + ' svg') //pass in a reference
                 .datum(exampleData(xVals, yData))
