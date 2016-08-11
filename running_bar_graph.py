@@ -16,11 +16,13 @@ app = Flask(__name__)
 # runOnVoodoo = False
 
 
+# this was the initial first page while the application was still based on a two-page layout
 @app.route('/trial')
 def run_bar_graph():
         return render_template('form.html')
 
 
+# another beginning trial page
 @app.route('/hello')
 def hello_world():
     return 'Hello world!'
@@ -96,7 +98,7 @@ def return_json():
     return render_template("bar_graph_full.html", data=a, timeTook=a.get("runTime"))
 
 
-
+# page to return data in a json format; not fully functional
 @app.route('/get_data.json')
 def return_json_get_data():
 

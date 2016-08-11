@@ -79,6 +79,7 @@ $(document).ready(function(){
     var xVals = graphData.xVals;
     var yVals = graphData.yVals;
     var chartNames = graphData.chartNames;
+    //chartNames deals with the eventual titles
     createCharts(chartNames, xVals, yVals);
     });
 
@@ -109,9 +110,9 @@ function createCharts(chartNames, xVals, yVals) {
                         .duration(350)
                 ;
 
-        d3.select('#chart' + (j + 1) + ' svg')
+        d3.select('#chart' + (j + 1) + ' svg') //this code creates the chart titles
                 .append("text")
-                .attr("x",250)
+                .attr("x", 250)
                 .attr("y", 20)
                 .attr("text-anchor", "middle")
                 .text(chartNames[j+2]);
@@ -162,6 +163,7 @@ function exampleData(xVals, list) {
 
 
 </script>
+
 
 <br style="clear: left">
 <hr style="clear: left" noshade color="orange">
